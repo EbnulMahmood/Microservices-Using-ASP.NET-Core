@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MassTransit;
+using Microsoft.AspNetCore.Mvc;
 using Play.Catalog.Service.DTOs;
 using Play.Catalog.Service.Entities;
 using Play.Catalog.Service.Extensions;
 using Play.Common.Service.IRepositories;
+using static Play.Catalog.Contracts.Contracts;
 
 namespace Play.Catalog.Service.Controllers
 {
@@ -12,15 +14,15 @@ namespace Play.Catalog.Service.Controllers
     {
         private readonly ILogger<ItemController> _logger;
         private readonly IRepository<Item> _itemRepository;
-        
-        // test delay case
-        private static int requestCounter = 0;
-        // end test delay case
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public ItemController(ILogger<ItemController> logger, IRepository<Item> itemRepository)
+        public ItemController(ILogger<ItemController> logger,
+            IRepository<Item> itemRepository,
+            IPublishEndpoint publishEndpoint)
         {
             _logger = logger;
             _itemRepository = itemRepository;
+            _publishEndpoint = publishEndpoint;
         }
 
         [HttpGet]
@@ -28,28 +30,8 @@ namespace Play.Catalog.Service.Controllers
         {
             try
             {
-                // test delay case
-                requestCounter++;
-                Console.WriteLine($"Request {requestCounter}: starting...");
-
-                if (requestCounter <= 2)
-                {
-                    Console.WriteLine($"Request {requestCounter}: delaying...");
-                    await Task.Delay(TimeSpan.FromSeconds(10));
-                }
-                if (requestCounter <= 4)
-                {
-                    Console.WriteLine($"Request {requestCounter}: 500 (Internal Server Error).");
-                    return StatusCode(500);
-                }
-                // end test delay case
-
                 var items = (await _itemRepository.LoadAsync())
                     .Select(item => item.AsDto());
-                
-                // test delay case
-                Console.WriteLine($"Request {requestCounter}: 200 (Ok).");
-                // end test delay case
                 
                 return Ok(items);
             }
@@ -92,6 +74,8 @@ namespace Play.Catalog.Service.Controllers
 
                 await _itemRepository.CreateAsync(item);
 
+                await _publishEndpoint.Publish(new CatalogItemCreated(item.Id, item.Name, item.Description));
+
                 return CreatedAtAction(nameof(GetItemByIdAsync), new { id = item.Id }, item);
             }
             catch (Exception)
@@ -116,6 +100,8 @@ namespace Play.Catalog.Service.Controllers
 
                 await _itemRepository.UpdateAsync(existingItem);
 
+                await _publishEndpoint.Publish(new CatalogItemUpdated(existingItem.Id, existingItem.Name, existingItem.Description));
+                
                 return NoContent();
             }
             catch (Exception)
@@ -136,6 +122,8 @@ namespace Play.Catalog.Service.Controllers
                  
                 await _itemRepository.DeleteAsync(item.Id);
 
+                await _publishEndpoint.Publish(new CatalogItemDeleted(id));
+                
                 return NoContent();
             }
             catch (Exception)

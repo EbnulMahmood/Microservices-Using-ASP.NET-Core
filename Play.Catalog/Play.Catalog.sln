@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{793B819F-94D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Play.Catalog.Service", "src\Play.Catalog.Service\Play.Catalog.Service.csproj", "{15E13680-5125-4397-92AA-F2CB174AAE70}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Play.Catalog.Contracts", "src\Play.Catalog.Contracts\Play.Catalog.Contracts.csproj", "{7D3AA9BC-1439-4D40-A2D6-DAD0C6FB10E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +22,13 @@ Global
 		{15E13680-5125-4397-92AA-F2CB174AAE70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15E13680-5125-4397-92AA-F2CB174AAE70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15E13680-5125-4397-92AA-F2CB174AAE70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D3AA9BC-1439-4D40-A2D6-DAD0C6FB10E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D3AA9BC-1439-4D40-A2D6-DAD0C6FB10E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D3AA9BC-1439-4D40-A2D6-DAD0C6FB10E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D3AA9BC-1439-4D40-A2D6-DAD0C6FB10E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{15E13680-5125-4397-92AA-F2CB174AAE70} = {793B819F-94DF-4478-A91E-282C4091C7EC}
+		{7D3AA9BC-1439-4D40-A2D6-DAD0C6FB10E9} = {793B819F-94DF-4478-A91E-282C4091C7EC}
 	EndGlobalSection
 EndGlobal
