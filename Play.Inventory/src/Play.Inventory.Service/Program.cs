@@ -1,7 +1,6 @@
 using Play.Common.Service.IRepositories;
 using Play.Common.Service.MongoDB;
-using Play.Inventory.Service.Clients;
-using Play.Inventory.Service.Clients.Contracts;
+using Play.Inventory.Service.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,13 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMongo(builder.Configuration);
 
-
 builder.Services.AddSingleton(typeof(IRepository<>), typeof(MongoRepository<>));
 
-builder.Services.AddHttpClient<ICatalogClient, CatalogClient>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5189");
-});
+builder.Services.AddCatalogHttpClient("http://localhost:5189");
 
 builder.Services.AddControllers(options =>
 {
