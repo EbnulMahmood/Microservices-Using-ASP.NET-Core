@@ -1,8 +1,18 @@
+using Play.Common.Service.IRepositories;
+using Play.Common.Service.MongoDB;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddMongo(builder.Configuration);
+
+builder.Services.AddSingleton(typeof(IRepository<>), typeof(MongoRepository<>));
+
+builder.Services.AddControllers(options =>
+{
+    options.SuppressAsyncSuffixInActionNames = false;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
