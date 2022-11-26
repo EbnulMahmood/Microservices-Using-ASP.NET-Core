@@ -13,7 +13,8 @@ namespace Play.Catalog.Service.RabbitMQ
             //Here we specify the Rabbit MQ Server. we use rabbitmq docker image and use it
             var factory = new ConnectionFactory
             {
-                HostName = "localhost"
+                HostName = "localhost",
+                Port = 5672
             };
             //Create the RabbitMQ connection using connection factory details as i mentioned above
             var connection = factory.CreateConnection();
