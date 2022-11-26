@@ -1,5 +1,5 @@
-using Play.Catalog.Service.Extensions;
 using Play.Common.Service.IRepositories;
+using Play.Common.Service.MassTransit;
 using Play.Common.Service.MongoDB;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +10,7 @@ builder.Services.AddMongo(builder.Configuration);
 
 builder.Services.AddSingleton(typeof(IRepository<>), typeof(MongoRepository<>));
 
-builder.Services.AddRabbitMQMassTransit(builder.Configuration);
+builder.Services.AddRabbitMQMassTransit();
 
 builder.Services.AddControllers(options =>
 {

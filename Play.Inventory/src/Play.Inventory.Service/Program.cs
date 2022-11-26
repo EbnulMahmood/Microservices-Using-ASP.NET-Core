@@ -1,4 +1,5 @@
 using Play.Common.Service.IRepositories;
+using Play.Common.Service.MassTransit;
 using Play.Common.Service.MongoDB;
 using Play.Inventory.Service.Extensions;
 
@@ -11,6 +12,8 @@ builder.Services.AddMongo(builder.Configuration);
 builder.Services.AddSingleton(typeof(IRepository<>), typeof(MongoRepository<>));
 
 builder.Services.AddCatalogHttpClient("http://localhost:5189");
+
+builder.Services.AddRabbitMQMassTransit();
 
 builder.Services.AddControllers(options =>
 {
