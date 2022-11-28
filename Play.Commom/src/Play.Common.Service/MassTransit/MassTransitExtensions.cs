@@ -1,11 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Play.Common.Service.MassTransit
 {
@@ -13,11 +8,18 @@ namespace Play.Common.Service.MassTransit
     {
         public static IServiceCollection AddRabbitMQMassTransit(this IServiceCollection services)
         {
-            services.AddMassTransit(x =>
-            {
-                x.AddConsumers(Assembly.GetEntryAssembly());
-                x.UsingRabbitMq();
-            });
+            //services.AddMassTransit(x =>
+            //{
+            //    x.UsingRabbitMq((cxt, cfg) =>
+            //    {
+            //        cfg.ReceiveEndpoint("catalog-items", e =>
+            //        {
+            //            e.Consumer<CatalogItemCreatedConsumer>(cxt);
+            //            e.Consumer<CatalogItemUpdatedConsumer>(cxt);
+            //            e.Consumer<CatalogItemDeletedConsumer>(cxt);
+            //        });
+            //    });
+            //});
 
             // OPTIONAL, but can be used to configure the bus options
             services.AddOptions<MassTransitHostOptions>()

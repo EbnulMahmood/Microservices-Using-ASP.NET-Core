@@ -1,3 +1,4 @@
+using MassTransit;
 using Play.Common.Service.IRepositories;
 using Play.Common.Service.MassTransit;
 using Play.Common.Service.MongoDB;
@@ -10,7 +11,11 @@ builder.Services.AddMongo(builder.Configuration);
 
 builder.Services.AddSingleton(typeof(IRepository<>), typeof(MongoRepository<>));
 
-builder.Services.AddRabbitMQMassTransit();
+//builder.Services.AddRabbitMQMassTransit();
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq();
+});
 
 builder.Services.AddControllers(options =>
 {

@@ -1,6 +1,7 @@
+using MassTransit;
 using Play.Common.Service.IRepositories;
-using Play.Common.Service.MassTransit;
 using Play.Common.Service.MongoDB;
+using Play.Inventory.Service.Consumers;
 using Play.Inventory.Service.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +14,18 @@ builder.Services.AddSingleton(typeof(IRepository<>), typeof(MongoRepository<>));
 
 builder.Services.AddCatalogHttpClient("http://localhost:5189");
 
-builder.Services.AddRabbitMQMassTransit();
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((cxt, cfg) =>
+    {
+        cfg.ReceiveEndpoint("catalog-items", e =>
+        {
+            e.Consumer<CatalogItemCreatedConsumer>(cxt);
+            e.Consumer<CatalogItemUpdatedConsumer>(cxt);
+            e.Consumer<CatalogItemDeletedConsumer>(cxt);
+        });
+    });
+});
 
 builder.Services.AddControllers(options =>
 {

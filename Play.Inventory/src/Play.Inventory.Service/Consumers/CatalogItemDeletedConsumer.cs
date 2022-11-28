@@ -1,7 +1,7 @@
 ﻿using MassTransit;
+using Play.Catalog.Contracts;
 using Play.Common.Service.IRepositories;
 using Play.Inventory.Service.Entities;
-using static Play.Catalog.Contracts.Contracts;
 
 namespace Play.Inventory.Service.Consumers
 {

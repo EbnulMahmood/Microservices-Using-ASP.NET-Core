@@ -1,10 +1,10 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using Play.Catalog.Contracts;
 using Play.Catalog.Service.DTOs;
 using Play.Catalog.Service.Entities;
 using Play.Catalog.Service.Extensions;
 using Play.Common.Service.IRepositories;
-using static Play.Catalog.Contracts.Contracts;
 
 namespace Play.Catalog.Service.Controllers
 {
@@ -30,7 +30,8 @@ namespace Play.Catalog.Service.Controllers
         {
             try
             {
-                var items = (await _itemRepository.LoadAsync())
+                var items = (await _itemRepository
+                    .LoadAsync())
                     .Select(item => item.AsDto());
                 
                 return Ok(items);
@@ -47,7 +48,8 @@ namespace Play.Catalog.Service.Controllers
         {
             try
             {
-                var item = await _itemRepository.GetByIdAsync(id);
+                var item = await _itemRepository
+                    .GetByIdAsync(id);
                 if (item is null) return NotFound();
 
                 return item.AsDto();
@@ -69,12 +71,17 @@ namespace Play.Catalog.Service.Controllers
                     Name = createItemDto.Name,
                     Description = createItemDto.Description,
                     Price = createItemDto.Price,
-                    CreatedDate = DateTimeOffset.UtcNow,
+                    CreatedDate = DateTimeOffset.UtcNow
                 };
 
-                await _itemRepository.CreateAsync(item);
+                await _itemRepository
+                    .CreateAsync(item);
 
-                await _publishEndpoint.Publish(new CatalogItemCreated(item.Id, item.Name, item.Description));
+                //await _publishEndpoint.Publish(new CatalogItemCreated(item.Id, item.Name, item.Description));
+                await _publishEndpoint.Publish<CatalogItemCreated>(new
+                {
+                    item.Id, item.Name, item.Description
+                });
 
                 return CreatedAtAction(nameof(GetItemByIdAsync), new { id = item.Id }, item);
             }
@@ -91,7 +98,8 @@ namespace Play.Catalog.Service.Controllers
         {
             try
             {
-                var existingItem = await _itemRepository.GetByIdAsync(id);
+                var existingItem = await _itemRepository
+                    .GetByIdAsync(id);
                 if (existingItem is null) return NotFound();
 
                 existingItem.Name = updateItemDto.Name;
@@ -100,8 +108,12 @@ namespace Play.Catalog.Service.Controllers
 
                 await _itemRepository.UpdateAsync(existingItem);
 
-                await _publishEndpoint.Publish(new CatalogItemUpdated(existingItem.Id, existingItem.Name, existingItem.Description));
-                
+                //await _publishEndpoint.Publish(new CatalogItemUpdated(existingItem.Id, existingItem.Name, existingItem.Description));
+                await _publishEndpoint.Publish<CatalogItemUpdated>(new
+                {
+                    existingItem.Id, existingItem.Name, existingItem.Description
+                });
+
                 return NoContent();
             }
             catch (Exception)
@@ -117,13 +129,18 @@ namespace Play.Catalog.Service.Controllers
         {
             try
             {
-                var item = await _itemRepository.GetByIdAsync(id);
+                var item = await _itemRepository
+                    .GetByIdAsync(id);
                 if (item is null) return NotFound();
                  
                 await _itemRepository.DeleteAsync(item.Id);
 
-                await _publishEndpoint.Publish(new CatalogItemDeleted(id));
-                
+                //await _publishEndpoint.Publish(new CatalogItemDeleted(id));
+                await _publishEndpoint.Publish<CatalogItemDeleted>(new
+                {
+                    id,
+                });
+
                 return NoContent();
             }
             catch (Exception)
